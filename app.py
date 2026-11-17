@@ -1255,6 +1255,7 @@ def login_google():
         redirect_uri
     )
 
+
 # ==========================================
 # RETORNO DO GOOGLE
 # ==========================================
@@ -1454,8 +1455,99 @@ def logout():
 # INICIAR SERVIDOR
 # ==========================================
 
-if __name__ == "__main__":
+# ============================================================
+# RENOMEAR CONVERSA
+# ============================================================
 
-    app.run(
-        debug=True
+@app.route("/renomear_chat/<int:chat_id>", methods=["POST"])
+def renomear_chat(chat_id):
+
+    usuario_id = session.get("usuario_id")
+
+    if not usuario_id:
+        return redirect(url_for("login"))
+
+    novo_titulo = request.form.get(
+        "novo_titulo", ""
+    ).strip()
+
+    if not novo_titulo or len(novo_titulo) > 100:
+        return redirect(url_for("novo_chat"))
+
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute(
+        """
+        UPDATE chats
+        SET titulo = ?
+        WHERE id = ? AND usuario_id = ?
+        """,
+        (novo_titulo, chat_id, usuario_id)
     )
+
+    conexao.commit()
+    conexao.close()
+
+    return redirect(
+        url_for("abrir_chat", chat_id=chat_id)
+    )
+
+
+# ============================================================
+# EXCLUIR CONVERSA
+# ============================================================
+
+
+@app.route("/excluir_chat/<int:chat_id>", methods=["POST"])
+def excluir_chat(chat_id):
+
+    usuario_id = session.get("usuario_id")
+
+    if not usuario_id:
+        return redirect(url_for("login"))
+
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute(
+            """
+            SELECT id FROM chats
+            WHERE id = ? AND usuario_id = ?
+            """,
+            (chat_id, usuario_id)
+        )
+
+        chat = cursor.fetchone()
+
+        if not chat:
+            return redirect("/")
+
+        cursor.execute(
+            "DELETE FROM mensagens WHERE chat_id = ?",
+            (chat_id,)
+        )
+
+        cursor.execute(
+            """
+            DELETE FROM chats
+            WHERE id = ? AND usuario_id = ?
+            """,
+            (chat_id, usuario_id)
+        )
+
+        conexao.commit()
+
+    except Exception:
+        conexao.rollback()
+        raise
+
+    finally:
+        conexao.close()
+
+    if str(session.get("chat_id")) == str(chat_id):
+        session.pop("chat_id", None)
+
+    return redirect("/")
