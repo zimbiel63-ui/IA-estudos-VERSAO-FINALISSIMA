@@ -44,9 +44,7 @@
     </script>
 
     <style>
-        /* =====================================
-           LISTA DE CONVERSAS
-        ===================================== */
+        /* LISTA DE CONVERSAS */
 
         .chat-item-container {
             display: flex;
@@ -70,9 +68,7 @@
             white-space: nowrap;
         }
 
-        /* =====================================
-           BOTÕES DOS CHATS
-        ===================================== */
+        /* BOTÕES DOS CHATS */
 
         .chat-acoes {
             display: flex;
@@ -100,9 +96,7 @@
             outline: 2px solid #888;
         }
 
-        /* =====================================
-           FORMATAÇÃO DAS RESPOSTAS
-        ===================================== */
+        /* FORMATAÇÃO DAS RESPOSTAS */
 
         .texto-resposta {
             line-height: 1.7;
@@ -156,15 +150,82 @@
             white-space: pre-wrap;
             overflow-wrap: anywhere;
         }
-    </style>
 
+        /* BOTÃO MOBILE */
+
+        .menu-mobile {
+            display: none;
+        }
+
+        .menu-overlay {
+            display: none;
+        }
+
+        /* MODAL DE RENOMEAR */
+
+        .modal-renomear[hidden] {
+            display: none;
+        }
+
+        .modal-renomear {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-conteudo {
+            background: #202020;
+            color: white;
+            padding: 25px;
+            border-radius: 14px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .modal-conteudo h3 {
+            margin-bottom: 18px;
+        }
+
+        #novo-nome-chat {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            background: #303030;
+            color: white;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .modal-botoes {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-botoes button {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .salvar-renomear {
+            background: #2563eb;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- =====================================
-         BARRA LATERAL
-    ===================================== -->
+    <!-- BARRA LATERAL -->
 
     <aside class="barra-lateral">
 
@@ -241,9 +302,7 @@
 
         </div>
 
-        <!-- =====================================
-             USUÁRIO LOGADO
-        ===================================== -->
+        <!-- USUÁRIO LOGADO -->
 
         <div class="barra-inferior">
 
@@ -270,11 +329,28 @@
 
     </aside>
 
-    <!-- =====================================
-         CONTEÚDO PRINCIPAL
-    ===================================== -->
+    <!-- FUNDO ESCURO DO MENU MOBILE -->
+
+    <div
+        class="menu-overlay"
+        id="menu-overlay"
+    ></div>
+
+    <!-- CONTEÚDO PRINCIPAL -->
 
     <main class="conteudo">
+
+        <!-- BOTÃO DO MENU MOBILE -->
+
+        <button
+            type="button"
+            class="menu-mobile"
+            id="menu-mobile"
+            aria-label="Abrir histórico de conversas"
+            aria-expanded="false"
+        >
+            ☰
+        </button>
 
         <!-- LOGO -->
 
@@ -300,9 +376,7 @@
 
         </div>
 
-        <!-- =====================================
-             HISTÓRICO DA CONVERSA
-        ===================================== -->
+        <!-- HISTÓRICO DA CONVERSA -->
 
         <div class="historico">
 
@@ -339,9 +413,7 @@
 
         </div>
 
-        <!-- =====================================
-             CAMPO DE PERGUNTA
-        ===================================== -->
+        <!-- CAMPO DE PERGUNTA -->
 
         <form
             action="{{ url_for('perguntar') }}"
@@ -363,9 +435,7 @@
 
         </form>
 
-        <!-- =====================================
-             CRÉDITOS DOS ALUNOS
-        ===================================== -->
+        <!-- CRÉDITOS DOS ALUNOS -->
 
         <div class="alunos">
 
@@ -383,15 +453,11 @@
 
     </main>
 
-    <!-- =====================================
-         JAVASCRIPT DOS CHATS
-    ===================================== -->
+    <!-- JAVASCRIPT DOS CHATS -->
 
     <script>
 
-        // =====================================
         // ENVIAR FORMULÁRIO PARA O FLASK
-        // =====================================
 
         function enviarFormulario(url, campos = {}) {
 
@@ -416,30 +482,25 @@
             formulario.submit();
         }
 
-
-        // =====================================
         // RENOMEAR CONVERSA
-        // =====================================
 
-        
-function renomearChat(chatId, tituloAtual) {
-    const janela = document.getElementById("janela-renomear");
-    const formulario = document.getElementById("form-renomear");
-    const campo = document.getElementById("novo-nome-chat");
+        function renomearChat(chatId, tituloAtual) {
 
-    formulario.action = "/renomear_chat/" + encodeURIComponent(chatId);
+            const janela = document.getElementById("janela-renomear");
+            const formulario = document.getElementById("form-renomear");
+            const campo = document.getElementById("novo-nome-chat");
 
-    campo.value = tituloAtual;
+            formulario.action = "/renomear_chat/" + encodeURIComponent(chatId);
 
-    janela.hidden = false;
+            campo.value = tituloAtual;
 
-    campo.focus();
-    campo.select();
-}
+            janela.hidden = false;
 
-        // =====================================
+            campo.focus();
+            campo.select();
+        }
+
         // EXCLUIR CONVERSA
-        // =====================================
 
         function excluirChat(chatId, tituloAtual) {
 
@@ -458,10 +519,7 @@ function renomearChat(chatId, tituloAtual) {
             );
         }
 
-
-        // =====================================
-        // ATIVAR BOTÕES
-        // =====================================
+        // ATIVAR BOTÕES DOS CHATS
 
         document.addEventListener("DOMContentLoaded", function () {
 
@@ -479,7 +537,6 @@ function renomearChat(chatId, tituloAtual) {
                     });
 
                 });
-
 
             // Botões de excluir
 
@@ -500,9 +557,7 @@ function renomearChat(chatId, tituloAtual) {
 
     </script>
 
-    <!-- =====================================
-         FORMATAR RESPOSTAS DA IA
-    ===================================== -->
+    <!-- FORMATAR RESPOSTAS DA IA -->
 
     <script>
 
@@ -543,14 +598,12 @@ function renomearChat(chatId, tituloAtual) {
                     continue;
                 }
 
-                // =====================================
                 // PROTEGER FÓRMULAS MATEMÁTICAS
-                // =====================================
 
                 const formulas = [];
 
                 const regexFormulas =
-                    /(\$\$[\s\S]*?\$\$|\$[^\$\n]+?\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g;
+                    /(\$\$[\s\S]*?\$\$|\$[^$\n]+?\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g;
 
                 const textoProtegido = texto.replace(
                     regexFormulas,
@@ -564,9 +617,7 @@ function renomearChat(chatId, tituloAtual) {
                     }
                 );
 
-                // =====================================
                 // CONVERTER MARKDOWN
-                // =====================================
 
                 const html = marked.parse(textoProtegido);
 
@@ -574,9 +625,7 @@ function renomearChat(chatId, tituloAtual) {
 
                 destino.innerHTML = htmlSeguro;
 
-                // =====================================
                 // RESTAURAR FÓRMULAS
-                // =====================================
 
                 const walker = document.createTreeWalker(
                     destino,
@@ -603,9 +652,7 @@ function renomearChat(chatId, tituloAtual) {
 
             }
 
-            // =====================================
             // RENDERIZAR FÓRMULAS COM MATHJAX
-            // =====================================
 
             if (window.MathJax) {
 
@@ -630,107 +677,146 @@ function renomearChat(chatId, tituloAtual) {
 
     </script>
 
-<!-- JANELA DE RENOMEAR CHAT -->
-<div id="janela-renomear" class="modal-renomear" hidden>
-    <div class="modal-conteudo">
-        <h3>Renomear conversa</h3>
+    <!-- JANELA DE RENOMEAR CHAT -->
 
-        <form id="form-renomear" method="POST">
-            <input
-                type="text"
-                id="novo-nome-chat"
-                name="novo_titulo"
-                maxlength="100"
-                placeholder="Nome da conversa"
-                required
-            >
+    <div id="janela-renomear" class="modal-renomear" hidden>
 
-            <div class="modal-botoes">
-                <button type="button" id="cancelar-renomear">
-                    Cancelar
-                </button>
+        <div class="modal-conteudo">
 
-                <button type="submit" class="salvar-renomear">
-                    Salvar
-                </button>
-            </div>
-        </form>
+            <h3>Renomear conversa</h3>
+
+            <form id="form-renomear" method="POST">
+
+                <input
+                    type="text"
+                    id="novo-nome-chat"
+                    name="novo_titulo"
+                    maxlength="100"
+                    placeholder="Nome da conversa"
+                    required
+                >
+
+                <div class="modal-botoes">
+
+                    <button type="button" id="cancelar-renomear">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="salvar-renomear">
+                        Salvar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
     </div>
-</div>
 
-<style>
-    .modal-renomear[hidden] {
-        display: none;
-    }
+    <!-- CONTROLES DO MODAL -->
 
-    .modal-renomear {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.65);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        padding: 20px;
-    }
+    <script>
 
-    .modal-conteudo {
-        background: #202020;
-        color: white;
-        padding: 25px;
-        border-radius: 14px;
-        width: 100%;
-        max-width: 400px;
-    }
+        document.getElementById("cancelar-renomear")
+            .addEventListener("click", function () {
 
-    .modal-conteudo h3 {
-        margin-bottom: 18px;
-    }
+                document.getElementById("janela-renomear").hidden = true;
 
-    #novo-nome-chat {
-        width: 100%;
-        padding: 12px;
-        border-radius: 8px;
-        border: 1px solid #555;
-        background: #303030;
-        color: white;
-        font-size: 15px;
-        box-sizing: border-box;
-    }
+            });
 
-    .modal-botoes {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 20px;
-    }
+        document.getElementById("janela-renomear")
+            .addEventListener("click", function (evento) {
 
-    .modal-botoes button {
-        padding: 10px 16px;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-    }
+                if (evento.target === this) {
+                    this.hidden = true;
+                }
 
-    .salvar-renomear {
-        background: #2563eb;
-        color: white;
-    }
-</style>
+            });
 
-<script>
-    document.getElementById("cancelar-renomear")
-        .addEventListener("click", function () {
-            document.getElementById("janela-renomear").hidden = true;
-        });
+    </script>
 
-    document.getElementById("janela-renomear")
-        .addEventListener("click", function (evento) {
-            if (evento.target === this) {
-                this.hidden = true;
+    <!-- MENU RESPONSIVO DO CELULAR -->
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const menu = document.querySelector(".barra-lateral");
+            const botao = document.getElementById("menu-mobile");
+            const overlay = document.getElementById("menu-overlay");
+
+            function abrirMenu() {
+
+                menu.classList.add("menu-aberto");
+                overlay.classList.add("ativo");
+
+                botao.setAttribute("aria-expanded", "true");
+                botao.setAttribute("aria-label", "Fechar histórico de conversas");
+
             }
+
+            function fecharMenu() {
+
+                menu.classList.remove("menu-aberto");
+                overlay.classList.remove("ativo");
+
+                botao.setAttribute("aria-expanded", "false");
+                botao.setAttribute("aria-label", "Abrir histórico de conversas");
+
+            }
+
+            botao.addEventListener("click", function () {
+
+                if (menu.classList.contains("menu-aberto")) {
+                    fecharMenu();
+                } else {
+                    abrirMenu();
+                }
+
+            });
+
+            overlay.addEventListener("click", fecharMenu);
+
+            // Fechar ao selecionar uma conversa
+
+            menu.querySelectorAll(".chat-item").forEach(function (link) {
+
+                link.addEventListener("click", fecharMenu);
+
+            });
+
+            // Fechar ao criar um novo chat
+
+            const novoChat = menu.querySelector(".novo-chat");
+
+            if (novoChat) {
+                novoChat.addEventListener("click", fecharMenu);
+            }
+
+            // Fechar com a tecla ESC
+
+            document.addEventListener("keydown", function (evento) {
+
+                if (evento.key === "Escape") {
+                    fecharMenu();
+                }
+
+            });
+
+            // Restaurar o layout do PC ao aumentar a tela
+
+            window.addEventListener("resize", function () {
+
+                if (window.innerWidth > 700) {
+                    fecharMenu();
+                }
+
+            });
+
         });
-</script>
+
+    </script>
 
 </body>
 </html>
